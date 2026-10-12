@@ -16,7 +16,7 @@ app.use(express.static(join(process.cwd(), 'public')));
 // Automatically route prebuilt proxy binaries out of node_modules
 app.use('/uv/', express.static(uvPath));
 app.use('/epoxy/', express.static(epoxyPath));
-app.use('/baremux/', express.static(bareMuxPath));
+app.use('/baremux/', express.static(baremuxPath));
 
 // Fallback 404 error layout routing
 app.use((req, res) => {

@@ -1,1 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#1c113a">
+    <meta name="color-scheme" content="dark">
+    <!-- 🎭 HARDCODED AUTOMATED DEFENSIVE TAB CLOAK -->
+    <title>Google Docs - Language Arts Assignment</title>
+    <link rel="icon" type="image/x-icon" href="https://gstatic.com">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: radial-gradient(circle at 10% 20%, rgb(43, 26, 143) 0%, rgb(22, 12, 59) 40%, rgb(180, 29, 87) 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+        /* Fullscreen Proxy Viewport Layer */
+        #proxy-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #ffffff;
+            border: none;
+            z-index: 9999;
+        }
+        /* Main Dashboard Stage Interface */
+        .stage {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+            z-index: 1;
+        }
+        .hero {
+            margin-bottom: 30px;
+        }
+        .greeting {
+            font-size: 1.4rem;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+            text-transform: capitalize;
+        }
+        .clock {
+            font-size: 5rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 5px;
+        }
+        .date {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 400;
+        }
+        /* Exact Floating Translucent Search Input Design */
+        .search-form {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 45px;
+            position: relative;
+        }
+        .search-wrapper {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 14px 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+        }
+        .search-wrapper:focus-within {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+        .search-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.4);
+            margin-right: 12px;
+        }
+        .search-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+        .search-input {
+            width: 100%;
+            background: none;
+            border: none;
+            outline: none;
+            color: #ffffff;
+            font-size: 1.05rem;
+            font-weight: 400;
+        }
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+        /* Grid Glassmorphic Shortcut Grid Layout */
+        .shortcuts {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+        .tile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 82px;
+            height: 96px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 14px;
+            text-decoration: none;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+        }
+        .tile:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 24px rgba(0,0,0,0.25);
+        }
+        .tile__icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .tile__icon svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
+        }
+        .tile__label {
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.8);
+        }
+    </style>
+</head>
+<body>
 
+  <!-- Fullscreen Hidden Frame Canvas -->
+  <iframe id="proxy-container" style="display: none;" src="about:blank"></iframe>
+
+  <main class="stage" id="main-stage">
+    <div class="hero">
+      <p class="greeting" id="greeting">Good morning</p>
+      <h1 class="clock" id="clock">00:00 AM</h1>
+      <p class="date" id="date">Loading space date...</p>
+    </div>
+
+    <!-- Search Input Form Container -->
+    <form class="search-form" id="search-form" autocomplete="off" novalidate>
+      <div class="search-wrapper">
+        <span class="search-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </span>
+        <input class="search-input" id="search-input" type="text" placeholder="Search the web...">
+      </div>
+    </form>
+
+    <!-- Navigation Shortcut Matrix Grid -->
+    <nav class="shortcuts" aria-label="Shortcuts">
+      <div class="tile" data-dest="https://google.com"><span class="tile__icon" style="background: linear-gradient(135deg, #f4511e, #ea4335 50%, #fbbc05);"><svg viewBox="0 0 24 24"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/></svg></span><span class="tile__label">Gmail</span></div>
+      <div class="tile" data-dest="https://github.com"><span class="tile__icon" style="background: linear-gradient(135deg, #24292e, #161b22);"><svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></span><span class="tile__label">GitHub</span></div>
+      <div class="tile" data-dest="https://twitter.com"><span class="tile__icon" style="background: linear-gradient(135deg, #1d9bf0, #007acc);"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></span><span class="tile__label">Twitter</span></div>
+      <div class="tile" data-dest="https://youtube.com"><span class="tile__icon" style="background: linear-gradient(135deg, #ff0000, #c40000);"><svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93 .502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></span><span class="tile__label">YouTube</span></div>

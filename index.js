@@ -6,6 +6,13 @@ import { join } from 'node:path';
 
 const app = express();
 const server = createServer();
+app.use((req, res, next) => {
+    res.setHeader('X-Frame-Options', 'ALLOWALL');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    next();
+});
 const PORT = process.env.PORT || 8080;
 
 // Serve public directory frontend layout assets

@@ -21,7 +21,9 @@ app.use(express.static(join(process.cwd(), 'public')));
 
 // 📡 THE OFFICIAL RE-ALIGNMENT FOR BASE44 PORTAL PATHWAYS
 // This correctly maps the compiled client distribution folders inside your node_modules
-app.use('/service/', express.static(join(process.cwd(), 'node_modules', '@titaniumnetwork-dev', 'ultraviolet', 'dist')));
+app.use((req, res) => {
+    res.status(404).send('Not found');
+});
 app.use('/uv/', express.static(join(process.cwd(), 'node_modules', '@titaniumnetwork-dev', 'ultraviolet', 'dist')));
 app.use('/epoxy/', express.static(join(process.cwd(), 'node_modules', '@mercuryworkshop', 'epoxy-transport', 'dist')));
 app.use('/baremux/', express.static(join(process.cwd(), 'node_modules', '@mercuryworkshop', 'bare-mux', 'dist')));

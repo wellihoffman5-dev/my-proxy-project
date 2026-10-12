@@ -86,3 +86,6 @@ document.addEventListener("keydown", (e) => {
     frame.src = "about:blank";
   }
 });
+// Open a destination passed as ?url=... (runs the full startup first)
+const dest = new URLSearchParams(location.search).get("url");
+if (dest) openProxied(dest);

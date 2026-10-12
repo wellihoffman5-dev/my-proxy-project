@@ -15,7 +15,9 @@ app.use(express.static(join(process.cwd(), 'public')));
 app.use('/uv/', express.static(uvPath));
 app.use('/epoxy/', express.static(epoxyPath));
 app.use('/baremux/', express.static(bareMuxPath));
-
+app.get('/railway-health', (req, res) => {
+    res.status(200).json({ status: "healthy" });
+});
 app.use((req, res) => {
     res.status(404).sendFile(join(process.cwd(), 'public', '404.html'));
 });

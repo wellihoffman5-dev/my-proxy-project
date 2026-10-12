@@ -45,11 +45,18 @@ async function openProxied(input) {
   }
 
   try {
-    await navigator.serviceWorker.register("/sw.js", {
+        const reg = await navigator.serviceWorker.register("/sw.js", {
       scope: __uv$config.prefix,
     });
-    await navigator.serviceWorker.ready;
-
+    const worker = reg.installing || reg.waiting || reg.active;
+    if (worker && worker.state !== "activated") {
+      await new Promise((resolve, reject) => {
+        worker.addEventListener("statechange", () => {
+          if (worker.state === "activated") resolve();
+          if (worker.state === "redundant") reject(new Error("Service worker failed to install"));
+        });
+      });
+    }
     const wisp =
       (location.protocol === "https:" ? "wss" : "ws") +
       "://" + location.host + "/wisp/";

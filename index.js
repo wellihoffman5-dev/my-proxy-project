@@ -3,7 +3,7 @@ import { createServer } from 'node:http';
 import { wispRoute } from 'wisp-server-node';
 import { uvPath } from '@titaniumnetwork-dev/ultraviolet';
 import { epoxyPath } from '@mercuryworkshop/epoxy-transport';
-import { bareMuxPath } from '@mercuryworkshop/bare-mux';
+import { baremuxPath } from '@mercuryworkshop/bare-mux';
 import { join } from 'node:path';
 
 const app = express();

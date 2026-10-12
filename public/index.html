@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#1c113a">
     <meta name="color-scheme" content="dark">
-    <!-- 🎭 HARDCODED DYNAMIC GOOGLE DOCS CAMOUFLAGE MASK -->
-    <title>Google Docs - Language Arts Assignment</title>
-    <link rel="icon" type="image/x-icon" href="https://gstatic.com">
+    <title>Start</title>
     <style>
         * {
             box-sizing: border-box;
@@ -27,7 +25,21 @@
             overflow: hidden;
             position: relative;
         }
-        /* Main Navigation Dashboard Stage Frame */
+        /* Fullscreen frame that shows the proxied site */
+        #proxy-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #ffffff;
+            border: none;
+            z-index: 9999;
+            display: none;
+        }
+        #proxy-container.active {
+            display: block !important;
+        }
         .stage {
             display: flex;
             flex-direction: column;
@@ -61,7 +73,6 @@
             color: rgba(255, 255, 255, 0.55);
             font-weight: 400;
         }
-        /* Translucent Search Panel Form Container */
         .search-form {
             width: 100%;
             margin-bottom: 40px;
@@ -106,7 +117,6 @@
         .search-input::placeholder {
             color: rgba(255, 255, 255, 0.4);
         }
-        /* Glassmorphic Navigation Layout Grid Grid */
         .shortcuts {
             display: flex;
             justify-content: center;
@@ -161,6 +171,9 @@
 </head>
 <body>
 
+  <!-- Fullscreen frame for the proxied site (proxy.js controls it) -->
+  <iframe id="proxy-container" src="about:blank"></iframe>
+
   <main class="stage" id="main-stage">
     <div class="hero">
       <p class="greeting" id="greeting">Good evening</p>
@@ -168,7 +181,6 @@
       <p class="date" id="date">Syncing date details...</p>
     </div>
 
-    <!-- Search Form Input Group -->
     <form class="search-form" id="search-form" autocomplete="off" novalidate>
       <div class="search-wrapper">
         <span class="search-icon">
@@ -181,69 +193,18 @@
       </div>
     </form>
 
-    <!-- Navigation Shortcut Cards Row -->
     <nav class="shortcuts" aria-label="Shortcuts">
       <div class="tile" data-dest="https://google.com"><span class="tile__icon" style="background: linear-gradient(135deg, #4285F4, #34A853, #FBBC05, #EA4335);"><svg viewBox="0 0 24 24"><path d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.113-5.111 4.113-3.418 0-6.205-2.787-6.205-6.205s2.787-6.205 6.205-6.205c1.493 0 2.861.533 3.93 1.442l3.22-3.22C18.817 1.83 15.753 1 12.24 1 5.92 1 1 5.92 1 12s4.92 11 11.24 11c6.58 0 11.24-4.63 11.24-11.24 0-.765-.083-1.472-.22-2.185H12.24z"/></svg></span><span class="tile__label">Google</span></div>
       <div class="tile" data-dest="https://wikipedia.org"><span class="tile__icon" style="background: linear-gradient(135deg, #a2a9b1, #72777d);"><svg viewBox="0 0 24 24"><path d="M12.09 3.12c-.52 0-1.02.24-1.32.66L6.54 10.22v4.54h10.9v-4.54l-4.23-6.44c-.3-.42-.8-.66-1.32-.66zM2 19.37c0 .9.73 1.63 1.64 1.63h16.72c.9 0 1.64-.73 1.64-1.63V16.1H2v3.27z"/></svg></span><span class="tile__label">Wikipedia</span></div>
       <div class="tile" data-dest="https://duckduckgo.com"><span class="tile__icon" style="background: linear-gradient(135deg, #DE5833, #F28C34);"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg></span><span class="tile__label">DuckDuckGo</span></div>
+      <div class="tile" data-dest="https://github.com"><span class="tile__icon" style="background: linear-gradient(135deg, #24292e, #161b22);"><svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></span><span class="tile__label">GitHub</span></div>
     </nav>
   </main>
 
-  <script>
-      // 🎭 Hardcoded Camouflage Mask Initialization
-      document.title = "Google Docs - Language Arts Assignment";
-      
-      // Real-time Clock and Date Module
-      function refreshClock() {
-          const now = new Date();
-          let hr = now.getHours();
-          let min = now.getMinutes();
-          const ampm = hr >= 12 ? 'PM' : 'AM';
-          hr = hr % 12 || 12;
-          min = min < 10 ? '0' + min : min;
-          
-          document.getElementById('clock').textContent = `${hr}:${min} ${ampm}`;
-          
-          const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
-          document.getElementById('date').textContent = now.toLocaleDateString('en-US', options);
-          
-          let greetingText = "Good evening";
-          if(now.getHours() < 12) greetingText = "Good morning";
-          else if(now.getHours() < 18) greetingText = "Good afternoon";
-          document.getElementById('greeting').textContent = greetingText;
-      }
-      setInterval(refreshClock, 1000);
-      refreshClock();
-
-      // 🔐 RE-ALIGNED DOUBLE-LAYER TRANSPOSITION ENGINE
-      // Standardizes payload formatting before execution to eliminate CORB blocks
-      const StealthObfuscator = {
-          encode(url) {
-              if (!url) return "";
-              // Step A: XOR Cipher Shift Encryption
-              const xorStr = url.split("").map((char, i) => i % 2 ? String.fromCharCode(char.charCodeAt(0) ^ 2) : char).join("");
-              // Step B: Pure Web-Standard Base64 Conversion (No URL encoding wrappers)
-              return btoa(xorStr);
-          }
-      };
-
-      const proxyForm = document.getElementById('search-form');
-      const inputNode = document.getElementById('search-input');
-
-      function routeStream(targetUrl) {
-          if (!targetUrl) return;
-          let destination = targetUrl.trim();
-          
-          if (!destination.startsWith('http://') && !destination.startsWith('https://')) {
-              if (destination.includes('.') && !destination.includes(' ')) {
-                  destination = 'https://' + destination;
-              } else {
-                  destination = 'https://google.com' + encodeURIComponent(destination);
-              }
-          }
-
-          const blindedPayload = StealthObfuscator.encode(destination);
-          
-          // 📡 Clean network path execution directly through your Cloudflare Worker gateway link
-          const finalizedPortalRoute = "https://workers.dev" + blindedPayload;
-          
+  <!-- Proxy engine + page logic. Keep these four lines in this order. -->
+  <script src="/baremux/index.js"></script>
+  <script src="/uv/uv.bundle.js"></script>
+  <script src="/uv.config.js"></script>
+  <script src="/proxy.js"></script>
+</body>
+</html>

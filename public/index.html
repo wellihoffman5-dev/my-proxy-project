@@ -27,21 +27,6 @@
             overflow: hidden;
             position: relative;
         }
-        /* Fullscreen Proxy Presentation Viewport Layer */
-        #proxy-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: #ffffff;
-            border: none;
-            z-index: 9999;
-            display: none;
-        }
-        #proxy-container.active {
-            display: block !important;
-        }
         /* Main Navigation Dashboard Stage Frame */
         .stage {
             display: flex;
@@ -176,9 +161,6 @@
 </head>
 <body>
 
-  <!-- Fullscreen Hidden Frame Canvas Overlay -->
-  <iframe id="proxy-container" src="about:blank"></iframe>
-
   <main class="stage" id="main-stage">
     <div class="hero">
       <p class="greeting" id="greeting">Good evening</p>
@@ -247,9 +229,21 @@
 
       const proxyForm = document.getElementById('search-form');
       const inputNode = document.getElementById('search-input');
-      const viewCanvas = document.getElementById('proxy-container');
 
       // 🚀 2. THE STEALTH SEARCH FUNCTION
       function routeStream(targetUrl) {
           if (!targetUrl) return;
           let destination = targetUrl.trim();
+          
+          if (!destination.startsWith('http://') && !destination.startsWith('https://')) {
+              if (destination.includes('.') && !destination.includes(' ')) {
+                  destination = 'https://' + destination;
+              } else {
+                  destination = 'https://google.com' + encodeURIComponent(destination);
+              }
+          }
+
+          // Convert target destination into a scrambled, unreadable variable payload
+          const blindedPayload = StealthObfuscator.encode(destination);
+          
+          // 📡 CRANNEL PIPELINE ALIGNMENT: 

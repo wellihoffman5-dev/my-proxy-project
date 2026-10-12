@@ -5,7 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "@mercuryworkshop/bare-mux": "^2.1.2",
-    "@mercuryworkshop/epoxy-transport": "^0.3.11",
+    "@mercuryworkshop/epoxy-transport": "^3.0.0",
     "@titaniumnetwork-dev/ultraviolet": "^3.2.7",
     "express": "^4.19.2",
     "wisp-server-node": "^1.1.4"

@@ -2,21 +2,22 @@ import express from 'express';
 import { createServer } from 'node:http';
 import wisp from 'wisp-server-node';
 import { uvPath } from '@titaniumnetwork-dev/ultraviolet';
-import { epoxyPath } from '@mercuryworkshop/epoxy-transport';
 import { join } from 'node:path';
 
 const app = express();
 const server = createServer();
 const PORT = process.env.PORT || 8080;
 
-// Serve public directory frontend files
+// Serve public directory frontend layout assets
 app.use(express.static(join(process.cwd(), 'public')));
 
-// Map public tracking layers
+// Map standard Ultraviolet static script routing path
 app.use('/uv/', express.static(uvPath));
-app.use('/epoxy/', express.static(epoxyPath));
 
-// Route BareMux asset folder explicitly from node_modules
+// Route Epoxy-Transport using a clean folder path string instead of an unexported variable
+app.use('/epoxy/', express.static(join(process.cwd(), 'node_modules', '@mercuryworkshop', 'epoxy-transport', 'dist')));
+
+// Route Bare-Mux using a clean folder path string instead of an unexported variable
 app.use('/baremux/', express.static(join(process.cwd(), 'node_modules', '@mercuryworkshop', 'bare-mux', 'dist')));
 
 // Fallback 404 handler

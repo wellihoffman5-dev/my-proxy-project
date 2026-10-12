@@ -1,1 +1,316 @@
+<html lang="en"><head>
+    <script>
+    (function() {
+        var buffer = window.__base44_preview_native_failures;
+        if (!buffer || buffer.version !== 1 || !Array.isArray(buffer.entries)) {
+            buffer = { version: 1, entries: [], listenersInstalled: false };
+            window.__base44_preview_native_failures = buffer;
+        }
+        if (buffer.listenersInstalled) return;
+        function value(object, key) {
+            return object && typeof object[key] === 'string' ? object[key] : '';
+        }
+        function append(message) {
+            if (!message) return;
+            var normalizedMessage = String(message).slice(0, 5000);
+            for (var index = buffer.entries.length - 1; index >= 0; index--) {
+                var existing = buffer.entries[index];
+                if (existing && existing.level === 'error' && existing.message === normalizedMessage) {
+                    buffer.entries.splice(index, 1);
+                }
+            }
+            buffer.entries.push({
+                level: 'error',
+                message: normalizedMessage,
+                timestamp: Date.now()
+            });
+            if (buffer.entries.length > 100) {
+                buffer.entries.splice(0, buffer.entries.length - 100);
+            }
+        }
+        buffer.append = append;
+        function handleError(event) {
+            var target = event && event.target;
+            var tagName = value(target, 'tagName').toLowerCase() || 'window';
+            var isModule = tagName === 'script' && value(target, 'type').toLowerCase() === 'module';
+            var resourceType = isModule ? 'module' : tagName;
+            var url = value(target, 'src') || value(target, 'href') || value(event, 'filename');
+            var detail = value(event, 'message') || value(event && event.error, 'message');
+            var prefix = tagName === 'window' ? 'Native browser error' : 'Failed to load ' + resourceType;
+            append(prefix + (url ? ' ' + url : '') + (detail ? ': ' + detail : ''));
+        }
+        function rejectionReason(reason) {
+            if (typeof reason === 'string') return reason;
+            var message = value(reason, 'message');
+            if (message) return message;
+            try { return JSON.stringify(reason) || String(reason); }
+            catch (e) { return String(reason); }
+        }
+        function handleRejection(event) {
+            append('Unhandled promise rejection: ' + rejectionReason(event && event.reason));
+        }
+        function handleCspViolation(event) {
+            var blockedUri = value(event, 'blockedURI') || 'resource';
+            var directive = value(event, 'violatedDirective');
+            append('Content Security Policy blocked ' + blockedUri + (directive ? ' (' + directive + ')' : ''));
+        }
+        function overlayText(root, selector) {
+            var element = root && root.querySelector(selector);
+            return value(element, 'textContent').trim();
+        }
+        function captureViteOverlay(overlay) {
+            var root = overlay && overlay.shadowRoot;
+            var message = overlayText(root, '.message-body');
+            if (!message) return;
+            var plugin = overlayText(root, '.plugin');
+            var details = ['Vite build error: ' + (plugin ? plugin + ' ' : '') + message];
+            var file = overlayText(root, '.file');
+            var frame = overlayText(root, '.frame');
+            var stack = overlayText(root, '.stack');
+            if (file) details.push('File: ' + file);
+            if (frame) details.push(frame);
+            if (stack) details.push(stack);
+            append(details.join(String.fromCharCode(10)));
+        }
+        function captureViteOverlays(node) {
+            if (!node || node.nodeType !== 1) return;
+            if (node.matches && node.matches('vite-error-overlay')) captureViteOverlay(node);
+            if (!node.querySelectorAll) return;
+            var overlays = node.querySelectorAll('vite-error-overlay');
+            for (var index = 0; index < overlays.length; index++) captureViteOverlay(overlays[index]);
+        }
+        window.addEventListener('error', handleError, true);
+        window.addEventListener('unhandledrejection', handleRejection);
+        window.addEventListener('securitypolicyviolation', handleCspViolation);
+        if (typeof MutationObserver !== 'undefined' && document.documentElement) {
+            captureViteOverlays(document.documentElement);
+            new MutationObserver(function(records) {
+                for (var recordIndex = 0; recordIndex < records.length; recordIndex++) {
+                    var nodes = records[recordIndex].addedNodes;
+                    for (var nodeIndex = 0; nodeIndex < nodes.length; nodeIndex++) {
+                        captureViteOverlays(nodes[nodeIndex]);
+                    }
+                }
+            }).observe(document.documentElement, { childList: true, subtree: true });
+        }
+        buffer.listenersInstalled = true;
+    })();
+    </script>
+    <script data-preview-data-env-pin="true">
+    (function() {
+        var KEY = 'base44_data_env';
+        var APP_API_PATH = "/api/apps/69fe5dc0d586e439cc9dcfef/";
+        var STORAGE_KEY = KEY + ':' + APP_API_PATH;
+        var API_ORIGINS = ["https://app.base44.com", "https://base44.app"].map(function(u) { return new URL(u).origin; });
+        var REQUEST_INIT_KEYS = [
+            'method', 'headers', 'credentials', 'mode', 'cache', 'redirect',
+            'referrer', 'referrerPolicy', 'integrity', 'keepalive', 'signal', 'priority',
+        ];
+        var env = new URLSearchParams(window.location.search).get(KEY);
+        try {
+            if (env === 'dev' || env === 'prod') sessionStorage.setItem(STORAGE_KEY, env);
+            else env = sessionStorage.getItem(STORAGE_KEY);
+        } catch (e) {}
+        if (env !== 'dev' && env !== 'prod') return;
+        function pin(url) {
+            try {
+                var u = new URL(url, window.location.href);
+                var sameOrigin = u.origin === window.location.origin;
+                if (!sameOrigin && API_ORIGINS.indexOf(u.origin) === -1) return url;
+                // The app's own server routes and TanStack server functions build
+                // their SDK client from this request, so they need the selection too.
+                var appServerPath = sameOrigin && (
+                    u.pathname.startsWith('/api/') || u.pathname.startsWith('/_serverFn/')
+                );
+                if (!appServerPath && !u.pathname.startsWith(APP_API_PATH)) return url;
+                // Privileged function/agent routes trust this app's Preview host,
+                // not a dev parameter sent to the generic SDK API origin.
+                if (u.origin !== window.location.origin && (
+                    u.pathname.startsWith(APP_API_PATH + 'functions/') ||
+                    u.pathname.startsWith(APP_API_PATH + 'agents/')
+                )) {
+                    u = new URL(u.pathname + u.search + u.hash, window.location.origin);
+                }
+                u.searchParams.set(KEY, env);
+                return u.toString();
+            } catch (e) { return url; }
+        }
+        var origFetch = window.fetch;
+        window.fetch = function(input, init) {
+            if (typeof input === 'string' || input instanceof URL) {
+                return origFetch.call(this, pin(String(input)), init);
+            }
+            if (!input || !input.url) return origFetch.call(this, input, init);
+            var pinned = pin(input.url);
+            if (pinned === input.url) return origFetch.call(this, input, init);
+            try {
+                input = new Request(input, init);
+                if (!input.keepalive || !input.body) {
+                    return origFetch.call(this, new Request(pinned, input));
+                }
+                // RequestInit exposes an existing body as a stream, which Fetch
+                // forbids with keepalive. Buffer only that case, after init overrides.
+                var self = this;
+                return input.blob().then(function(body) {
+                    var rebuilt = { body: body };
+                    REQUEST_INIT_KEYS.forEach(function(key) {
+                        if (input[key] !== undefined) rebuilt[key] = input[key];
+                    });
+                    return origFetch.call(self, new Request(pinned, rebuilt));
+                });
+            } catch (error) { return Promise.reject(error); }
+        };
+        var origOpen = XMLHttpRequest.prototype.open;
+        XMLHttpRequest.prototype.open = function(method, url) {
+            arguments[1] = pin(String(url));
+            return origOpen.apply(this, arguments);
+        };
+    })();
+    </script><script defer="" data-preview-inject="true" data-app-id="69fe5dc0d586e439cc9dcfef" data-preview-type="latest_preview" data-rum-app-id="db50c921-10c3-4f12-bccb-950fa174b708" data-rum-client-token="pubfe8a4f2972b412b4556fd67e77f82cb4" data-dd-site="datadoghq.com" src="https://app.base44.com/builder-bridge.js?t=1791819470"></script>
+    <script>
+    (function() {
+        var IGNORE = { SCRIPT: 1, STYLE: 1, LINK: 1, META: 1, NOSCRIPT: 1, TEMPLATE: 1 };
+        const fire = () => window.parent.postMessage({ type: 'IFRAME_CONTENT_READY' }, '*');
+        function check() {
+            var body = document.body;
+            if (!body) return false;
+            for (var idx = 0; idx < body.children.length; idx++) {
+                if (!IGNORE[body.children[idx].tagName]) return true;
+            }
+            return false;
+        }
+        function start() {
+            if (check()) { fire(); return; }
+            var observer = new MutationObserver(function() {
+                if (check()) { fire(); observer.disconnect(); }
+            });
+            observer.observe(document.documentElement, { childList: true, subtree: true });
+        }
+        if (document.body) { start(); }
+        else { document.addEventListener('DOMContentLoaded', start, { once: true }); }
+    })();
+    </script>
+    <script>
+    (function() {
+        if (window.self === window.top) return;
+        var APP_ID = "69fe5dc0d586e439cc9dcfef";
+        var PREVIEW_TYPE = "latest_preview";
+        var on404 = false;
+        var booted = false;
+        function detect() { return !!document.querySelector('[data-source-location^="PageNotFound:"]'); }
+        function payload() { return { app_id: APP_ID, preview_type: PREVIEW_TYPE, url_path: window.location.pathname }; }
+        function tick() {
+            var now = detect();
+            if (now && !on404) {
+                on404 = true;
+                window.parent.postMessage({ type: 'PREVIEW_PAGE_NOT_FOUND', payload: payload() }, '*');
+            } else if (!now && (on404 || !booted)) {
+                // On first tick of a fresh document, emit a cleared signal even when
+                // not currently on a 404 — the parent may have latched is404=true from
+                // a previous document at the same URL (e.g. after an iframe reload).
+                on404 = false;
+                window.parent.postMessage({ type: 'PREVIEW_PAGE_NOT_FOUND_CLEARED', payload: payload() }, '*');
+            }
+            booted = true;
+        }
+        function start() {
+            tick();
+            new MutationObserver(tick).observe(document.body, { childList: true, subtree: true });
+        }
+        if (document.body) { start(); }
+        else { document.addEventListener('DOMContentLoaded', start, { once: true }); }
+    })();
+    </script>
+    <script>
+    (function() {
+        if (window.self === window.top) return;
+        function postUnsupported(reason) {
+            window.parent.postMessage({
+                type: 'IFRAME_FIRST_CONTENTFUL_PAINT_UNSUPPORTED',
+                payload: { reason: reason, userAgent: navigator.userAgent }
+            }, '*');
+        }
+        if (typeof PerformanceObserver === 'undefined') {
+            postUnsupported('no_performance_observer');
+            return;
+        }
+        try {
+            var obs = new PerformanceObserver(function(list) {
+                var entries = list.getEntries();
+                for (var i = 0; i < entries.length; i++) {
+                    if (entries[i].name === 'first-contentful-paint') {
+                        obs.disconnect();
+                        window.parent.postMessage({ type: 'IFRAME_FIRST_CONTENTFUL_PAINT' }, '*');
+                        return;
+                    }
+                }
+            });
+            obs.observe({ type: 'paint', buffered: true });
+        } catch (e) {
+            postUnsupported('observe_threw:' + (e && e.name ? e.name : 'Error'));
+        }
+    })();
+    </script>
+    <script>
+    (function() {
+        if (window.self === window.top) return;
+        var lastUrl = window.location.href;
+        function notify() {
+            var url = window.location.href;
+            if (url === lastUrl) return;
+            lastUrl = url;
+            window.parent.postMessage({ type: 'APP_CHANGED_URL', url: url }, '*');
+        }
+        var origPush = history.pushState.bind(history);
+        history.pushState = function() { origPush.apply(history, arguments); notify(); };
+        var origReplace = history.replaceState.bind(history);
+        history.replaceState = function() { origReplace.apply(history, arguments); notify(); };
+        window.addEventListener('popstate', notify);
+        window.parent.postMessage({ type: 'APP_CHANGED_URL', url: window.location.href }, '*');
+    })();
+    </script>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="https://ssl.gstatic.com/docs/documents/images/kixfavicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="/manifest.json">
+    <title>Google Docs - Language Arts Assignment</title>
+    <script type="module" crossorigin="" src="/assets/index-Btm-s9Ke.js"></script>
+    <link rel="stylesheet" crossorigin="" href="/assets/index-BRaUsaQO.css">
+    <script type="module">
+if (window.self === window.top) {
+  let lastPath = "";
+  function getPageNameFromPath(path) {
+    const segments = path.split("/").filter(Boolean);
+    return segments[0] || null;
+  }
+  function trackPageView() {
+    const path = window.location.pathname;
+    if (path === lastPath) return;
+    lastPath = path;
+    const pageName = getPageNameFromPath(path) || "home";
+    const appId = "69fe5dc0d586e439cc9dcfef";
+    if (!appId) return;
+    fetch(`/api/app-logs/${appId}/log-user-in-app/${pageName}`, {
+      method: "POST",
+    }).catch(() => {});
+  }
+  const originalPushState = history.pushState.bind(history);
+  history.pushState = function (...args) {
+    originalPushState(...args);
+    trackPageView();
+  };
+  const originalReplaceState = history.replaceState.bind(history);
+  history.replaceState = function (...args) {
+    originalReplaceState(...args);
+    trackPageView();
+  };
+  window.addEventListener("popstate", trackPageView);
+  trackPageView();
+}
+</script>
+  <script src="https://www.datadoghq-browser-agent.com/us1/v5/datadog-rum.js"></script><script src="https://www.datadoghq-browser-agent.com/us1/v5/datadog-logs.js"></script></head>
+  <body>
+    <div id="root"><div class="relative min-h-screen bg-background"><div class="fixed inset-0 pointer-events-none overflow-hidden"><div class="absolute -top-40 -left-40 w-96 h-96 bg-primary/8 rounded-full blur-3xl"></div><div class="absolute -bottom-40 -right-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div><div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/3 rounded-full blur-[120px]"></div><div class="absolute inset-0 opacity-[0.03]" style="background-image: linear-gradient(rgba(223, 32, 32, 0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(223, 32, 32, 0.3) 1px, transparent 1px); background-size: 60px 60px;"></div></div><main class="relative z-10 flex-1 flex flex-col items-center justify-center px-6 pb-20 min-h-screen"><div class="w-full max-w-3xl flex flex-col items-center gap-10"><div class="flex flex-col items-center gap-4" style="opacity: 1; transform: none;"><div class="relative"><div class="absolute inset-0 bg-primary/30 blur-3xl rounded-full scale-150"></div><div class="relative w-20 h-20 md:w-28 md:h-28 rounded-2xl bg-gradient-to-br from-primary/20 to-transparent border border-primary/30 flex items-center justify-center backdrop-blur-sm"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield w-10 h-10 md:w-14 md:h-14 text-primary"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path></svg></div></div><div class="text-center"><h1 class="font-orbitron text-3xl md:text-5xl font-bold tracking-wider text-foreground">VAULT<span class="text-primary"> BROWSING</span></h1></div></div><div class="w-full max-w-2xl mx-auto" style="opacity: 1; transform: none;"><form class="relative group"><div class="absolute -inset-1 rounded-2xl bg-gradient-to-r from-primary/60 via-primary/20 to-primary/60 blur-md transition-opacity duration-500 opacity-0 group-hover:opacity-50"></div><div class="relative flex items-center bg-card border rounded-xl transition-all duration-300 border-border hover:border-primary/30"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search w-5 h-5 text-muted-foreground ml-5 flex-shrink-0"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg><input type="text" placeholder="Enter a URL or search..." class="flex-1 bg-transparent px-4 py-4 md:py-5 text-foreground placeholder:text-muted-foreground font-inter text-sm md:text-base outline-none" fdprocessedid="y7jtx9"><button type="submit" class="mr-3 p-2.5 rounded-lg bg-primary hover:bg-primary/80 disabled:opacity-50 disabled:cursor-not-allowed text-primary-foreground transition-all duration-200 hover:scale-105 active:scale-95" fdprocessedid="e5ci7"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right w-4 h-4 md:w-5 md:h-5"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></button></div></form></div></div></main><footer class="relative z-10 py-4 text-center"><div class="flex items-center justify-center gap-1.5 text-muted-foreground/50 text-xs font-inter"><span>Vault Browsing — Your gateway to the web</span></div></footer></div><div class="fixed top-0 z-[100] flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-[420px]"><div class="fixed top-0 z-[100] flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-[420px]"></div></div></div>
+  
 
+<span id="PING_IFRAME_FORM_DETECTION" style="display: none;"></span></body></html>
